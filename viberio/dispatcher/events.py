@@ -52,8 +52,10 @@ class Event:
             data = DataDict(data)
 
         results = []
-        for handler in self._handlers:
+        for handler in self._handlers:  # type: EventHandler
             try:
+                check = await handler.check(event)
+                data.update(check)
                 result = await self.call_handler(handler, event, data)
 
             except SkipHandler:
@@ -70,7 +72,7 @@ class Event:
         return results
 
     async def call_handler(self, handler: EventHandler, event, data):
-        handler = handler.start
+        handler = handler.run
         for m in reversed(self._middlewares):
             handler = functools.partial(m, handler)
         return await handler(event, data)
@@ -105,6 +107,7 @@ class EventHandler:
     async def check(self, event):
         data = DataDict()
         for filter_ in self.filters:
+
             if inspect.isawaitable(filter_):
                 check = await filter_(event)
             else:
@@ -120,8 +123,3 @@ class EventHandler:
 
     async def run(self, event, data):
         return await self.callback(event, data)
-
-    async def start(self, event, data) -> bool:
-        check = await self.check(event)
-        data.update(check)
-        return await self.run(event, data)
