@@ -1,3 +1,4 @@
 aiohttp
 certifi
 python-dateutil
+validators

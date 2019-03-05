@@ -6,6 +6,8 @@ import typing
 
 import attr
 
+from viberio.dispatcher.filters.filters import wrap_async
+
 
 class SkipHandler(Exception):
     pass
@@ -108,10 +110,7 @@ class EventHandler:
         data = DataDict()
         for filter_ in self.filters:
 
-            if inspect.isawaitable(filter_):
-                check = await filter_(event)
-            else:
-                check = filter_(event)
+            check = await wrap_async(filter_)(event)
 
             if not check:
                 raise SkipHandler()

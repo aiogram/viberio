@@ -3,9 +3,10 @@ from viberio.api.client import ViberBot
 from viberio.dispatcher.events import Event, SkipHandler
 from viberio.types import requests, messages
 from viberio.types.requests import EventType
+from viberio.utils.mixins import DataMixin, ContextInstanceMixin
 
 
-class Dispatcher:
+class Dispatcher(DataMixin, ContextInstanceMixin):
     def __init__(self, viber: ViberBot):
         self.viber: ViberBot = viber
 
