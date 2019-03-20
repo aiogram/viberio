@@ -1,9 +1,11 @@
+import contextvars
 import logging
 
 from aiohttp import web
 
 from viberio.api.client import ViberBot
 from viberio.dispatcher.dispatcher import Dispatcher
+from viberio.types.requests import ViberReqestObject
 
 VIBER_DISPATCHER = '#viber-dispatcher'
 
@@ -11,6 +13,11 @@ log = logging.getLogger(__name__)
 
 
 class ViberWebhookView(web.View):
+    _event = contextvars.ContextVar('viber_event')
+
+    def get_current_event(self):
+        return self._event.get(None)
+
     @property
     def viber(self) -> ViberBot:
         return self.request.app[VIBER_DISPATCHER].viber
@@ -35,6 +42,7 @@ class ViberWebhookView(web.View):
 
         try:
             request_object = self.dispatcher.parse_request(data)
+            ViberReqestObject.set_current(request_object)
 
         except TypeError as e:
             log.exception(f"Failed to parse input message: {data} with error: {e}")
