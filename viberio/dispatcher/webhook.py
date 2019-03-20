@@ -48,7 +48,7 @@ class ViberWebhookView(web.View):
             log.exception(f"Failed to parse input message: {data} with error: {e}")
 
         else:
-            log.info(f"Received {request_object.event} event: {request_object}")
+            log.debug(f"Received {request_object.event} event: {request_object}")
             try:
                 await self.dispatcher.feed_request(request_object)
             except Exception as e:

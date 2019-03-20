@@ -31,7 +31,7 @@ class ViberLoggingFilter(logging.Filter):
 
         if request:
             for key, value in self.make_prefix(self.prefix, self.process_request(request)):
-                setattr(self, key, value)
+                setattr(record, key, value)
 
         return True
 
