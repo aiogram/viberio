@@ -10,11 +10,12 @@ from viberio.types.requests import ViberMessageRequest
 
 class Text(Filter):
     def __init__(self, eq=None, starts=None, ends=None, contains=None, case_insensitive=True):
-        self.eq = eq
-        self.starts = starts
-        self.ends = ends
-        self.contains = contains
         self.case_insensitive = case_insensitive
+
+        self.eq = eq.lower() if eq and case_insensitive else eq
+        self.starts = starts.lower() if starts and case_insensitive else starts
+        self.ends = ends.lower() if ends and case_insensitive else ends
+        self.contains = contains.lower() if contains and case_insensitive else contains
 
         check = sum(map(bool, (eq, contains, starts, ends)))
         if check > 1:
@@ -35,6 +36,8 @@ class Text(Filter):
         return False
 
     def check_text(self, text: str) -> bool:
+        if self.case_insensitive is True:
+            text = text.lower()
         if self.eq:
             return self.eq == text
         elif self.starts:
