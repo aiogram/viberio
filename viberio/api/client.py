@@ -60,6 +60,13 @@ class ViberBot(BaseViberBot):
         result = await self.post(ApiMethods.SEND_MESSAGE, payload)
         return result.get('message_token')
 
+    async def get_account_info(self):
+        payload = {
+            'auth_token': self.bot_configuration.auth_token
+        }
+        result = await self.post(ApiMethods.GET_ACCOUNT_INFO, payload)
+        return result
+
 
 """
 conversation_started_request
