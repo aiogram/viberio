@@ -1,5 +1,6 @@
 import attr
 
+from .picture_message import PictureMessage
 from .text_message import TextMessage
 from viberio.types.base import ViberBaseObject
 
@@ -81,5 +82,5 @@ class Keyboard(ViberBaseObject):
 
 
 @attr.s
-class KeyboardMessage(TextMessage):
+class KeyboardMessage(TextMessage, PictureMessage):
     keyboard: Keyboard = attr.ib(default=None)
