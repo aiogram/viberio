@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 
 try:
     from pip.req import parse_requirements
-except ImportError:  # pip >= 10.0.0
+except ImportError:  # pip >= 20.2.1
     from pip._internal.req import parse_requirements
 
 WORK_DIR = pathlib.Path(__file__).parent
@@ -52,7 +52,7 @@ def get_requirements(filename=None):
     file = WORK_DIR / filename
 
     install_reqs = parse_requirements(str(file), session='hack')
-    return [str(ir.req) for ir in install_reqs]
+    return [str(ir.requirement) for ir in install_reqs]
 
 
 setup(
@@ -62,7 +62,7 @@ setup(
     url='https://github.com/aiogram/viberio',
     license='MIT',
     author='Alex Root Junior',
-    requires_python='>=3.7',
+    python_requires='>=3.7',
     author_email='jroot.junior@gmail.com',
     description='Is a pretty simple and fully asynchronous library for Telegram Bot API',
     long_description=get_description(),
