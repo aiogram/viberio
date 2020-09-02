@@ -8,4 +8,3 @@ from .base import ViberReqestObject
 @attr.s
 class ViberSubscribedRequest(ViberReqestObject):
     user: UserProfile = attr.ib(convert=ensure_cls(UserProfile))
-    api_version: str = attr.ib()
