@@ -1,9 +1,13 @@
+import typing
+
 from viberio import types
 from viberio.api.client import ViberBot
 from viberio.dispatcher.events import Event, SkipHandler
 from viberio.types import requests, messages
 from viberio.types.requests import EventType
 from viberio.utils.mixins import DataMixin, ContextInstanceMixin
+
+from .storage import FSMContext
 
 
 class Dispatcher(DataMixin, ContextInstanceMixin):
@@ -98,3 +102,33 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         if result:
             return result
         raise SkipHandler()
+
+    def current_state(self, *,
+                      chat: typing.Union[str, int, None] = None,
+                      user: typing.Union[str, int, None] = None) -> FSMContext:
+        """
+
+        | WARN: Migrated from aiogram v2.19 |
+
+        Get current state for user in chat as context
+
+        .. code-block:: python3
+
+            with dp.current_state(chat=message.chat.id, user=message.user.id) as state:
+                pass
+
+            state = dp.current_state()
+            state.set_state('my_state')
+
+        :param chat:
+        :param user:
+        :return:
+        """
+        if chat is None:
+            chat_obj = types.Chat.get_current()
+            chat = chat_obj.id if chat_obj else None
+        if user is None:
+            user_obj = types.User.get_current()
+            user = user_obj.id if user_obj else None
+
+        return FSMContext(storage=self.storage, chat=chat, user=user)
