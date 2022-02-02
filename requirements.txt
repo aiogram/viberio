@@ -1,4 +1,5 @@
-aiohttp
-certifi
-python-dateutil
-validators
+aiohttp==3.6.2
+certifi>=2021.10.8
+python-dateutil==2.8.2
+validators==0.18.2
+attrs==19.1.0
