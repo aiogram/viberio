@@ -61,3 +61,6 @@ class ViberWebhookView(web.View):
     def bind(cls, dispatcher: Dispatcher, app: web.Application, path: str = '/', name='viber-webhook'):
         app.router.add_route('*', path, cls, name=name)
         app[VIBER_DISPATCHER] = dispatcher
+
+        Dispatcher.set_current(dispatcher)
+        ViberBot.set_current(dispatcher.viber)

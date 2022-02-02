@@ -1,4 +1,5 @@
 from viberio.api.base import BaseViberBot
+from viberio.utils.mixins import ContextInstanceMixin
 
 
 class ApiMethods:
@@ -10,7 +11,7 @@ class ApiMethods:
     POST = 'post'
 
 
-class ViberBot(BaseViberBot):
+class ViberBot(ContextInstanceMixin, BaseViberBot):
     async def set_webhook(self, url, webhook_events=None, is_inline=False):
         payload = {
             'auth_token': self.bot_configuration.auth_token,
