@@ -44,13 +44,13 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.messages_handler.subscribe(self._process_message, [])
 
     @staticmethod
-    def parse_request(data: dict) -> requests.ViberReqestObject:
+    def parse_request(data: dict) -> requests.ViberRequestObject:
         return types.requests.parse_request(data)
 
-    def feed_request(self, request: requests.ViberReqestObject):
+    def feed_request(self, request: requests.ViberRequestObject):
         return self.loop.create_task(self.handlers.notify(request))
 
-    async def _process_event(self, viber_request: requests.ViberReqestObject, data: dict):
+    async def _process_event(self, viber_request: requests.ViberRequestObject, data: dict):
         data['_request'] = viber_request
         if viber_request.event == EventType.SUBSCRIBED:
             result = await self.subscribed_handler.notify(viber_request, data)

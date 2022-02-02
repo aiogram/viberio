@@ -1,10 +1,10 @@
 import attr
 
-from .base import ViberReqestObject
+from .base import ViberRequestObject
 
 
 @attr.s
-class ViberRequest(ViberReqestObject):
+class ViberRequest(ViberRequestObject):
     event: str = attr.ib()
     # event_type: str = attr.ib()
     timestamp: int = attr.ib()

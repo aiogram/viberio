@@ -1,8 +1,8 @@
 import attr
 
-from viberio.types.requests import ViberReqestObject
+from viberio.types.requests import ViberRequestObject
 
 
 @attr.s
-class ViberUnsubscribedRequest(ViberReqestObject):
+class ViberUnsubscribedRequest(ViberRequestObject):
     user_id: str = attr.ib()

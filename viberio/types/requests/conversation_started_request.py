@@ -2,11 +2,11 @@ import attr
 
 from viberio.utils.safe import ensure_cls
 from viberio.types.user_profile import UserProfile
-from .base import ViberReqestObject
+from .base import ViberRequestObject
 
 
 @attr.s
-class ViberConversationStartedRequest(ViberReqestObject):
+class ViberConversationStartedRequest(ViberRequestObject):
     message_token: int = attr.ib()
     type: str = attr.ib()
     user: UserProfile = attr.ib(convert=ensure_cls(UserProfile))

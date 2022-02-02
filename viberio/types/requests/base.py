@@ -4,7 +4,7 @@ from viberio.types.base import ViberBaseObject
 
 
 @attr.s
-class ViberReqestObject(ViberBaseObject):
+class ViberRequestObject(ViberBaseObject):
     event: str = attr.ib()
     chat_hostname: str = attr.ib()
     timestamp: int = attr.ib()

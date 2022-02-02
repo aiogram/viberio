@@ -4,11 +4,11 @@ from viberio.utils.safe import ensure_cls, ensure_factory
 from viberio.types.messages.message import TypedMessage
 from viberio.types.messages.message_type import parse_message
 from viberio.types.user_profile import UserProfile
-from .base import ViberReqestObject
+from .base import ViberRequestObject
 
 
 @attr.s
-class ViberMessageRequest(ViberReqestObject):
+class ViberMessageRequest(ViberRequestObject):
     message: TypedMessage = attr.ib(convert=ensure_factory(parse_message))
     sender: UserProfile = attr.ib(convert=ensure_cls(UserProfile))
     file_name: str

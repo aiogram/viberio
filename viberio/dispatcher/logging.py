@@ -1,7 +1,7 @@
 import logging
 
 from viberio.types.messages import TypedMessage
-from viberio.types.requests import ViberReqestObject, ViberUnsubscribedRequest, ViberSubscribedRequest, \
+from viberio.types.requests import ViberRequestObject, ViberUnsubscribedRequest, ViberSubscribedRequest, \
     ViberDeliveredRequest, ViberConversationStartedRequest, ViberFailedRequest, ViberMessageRequest, ViberRequest
 from viberio.types.requests.seen_request import ViberSeenRequest
 from viberio.types.user_profile import UserProfile
@@ -27,7 +27,7 @@ class ViberLoggingFilter(logging.Filter):
             yield f"{prefix}_{key}", value
 
     def filter(self, record: logging.Filter):
-        request = ViberReqestObject.get_current()
+        request = ViberRequestObject.get_current()
 
         if request:
             for key, value in self.make_prefix(self.prefix, self.process_request(request)):
@@ -35,7 +35,7 @@ class ViberLoggingFilter(logging.Filter):
 
         return True
 
-    def process_request(self, event: ViberReqestObject):
+    def process_request(self, event: ViberRequestObject):
         yield 'event_type', event.event
 
         if isinstance(event, ViberMessageRequest):
