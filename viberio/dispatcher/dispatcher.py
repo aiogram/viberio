@@ -7,14 +7,17 @@ from viberio.types import requests, messages
 from viberio.types.requests import EventType
 from viberio.utils.mixins import DataMixin, ContextInstanceMixin
 
-from .storage import FSMContext
+from .storage import FSMContext, BaseStorage, DisabledStorage
 
 
 class Dispatcher(DataMixin, ContextInstanceMixin):
-    def __init__(self, viber: ViberBot):
-        self.viber: ViberBot = viber
+    def __init__(self, viber: ViberBot, storage: typing.Optional[BaseStorage] = None):
+        if storage is None:
+            storage = DisabledStorage()
 
+        self.viber: ViberBot = viber
         self.loop = self.viber.loop
+        self.storage = storage
 
         self.handlers = Event()
         self.messages_handler = Event()  # ViberMessageRequest
@@ -103,18 +106,14 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             return result
         raise SkipHandler()
 
-    def current_state(self, *,
-                      chat: typing.Union[str, int, None] = None,
-                      user: typing.Union[str, int, None] = None) -> FSMContext:
+    def current_state(self, *, user: str) -> FSMContext:
         """
-
-        | WARN: Migrated from aiogram v2.19 |
 
         Get current state for user in chat as context
 
         .. code-block:: python3
 
-            with dp.current_state(chat=message.chat.id, user=message.user.id) as state:
+            with dp.current_state(user=request.sender.id) as state:
                 pass
 
             state = dp.current_state()
@@ -124,11 +123,5 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         :param user:
         :return:
         """
-        if chat is None:
-            chat_obj = types.Chat.get_current()
-            chat = chat_obj.id if chat_obj else None
-        if user is None:
-            user_obj = types.User.get_current()
-            user = user_obj.id if user_obj else None
 
-        return FSMContext(storage=self.storage, chat=chat, user=user)
+        return FSMContext(storage=self.storage, user=user)
