@@ -1,5 +1,5 @@
 from viberio.api.exceptions import ViberException
-from .base import ViberReqestObject
+from .base import ViberRequestObject
 from .conversation_started_request import ViberConversationStartedRequest
 from .delivered_request import ViberDeliveredRequest
 from .failed_request import ViberFailedRequest
@@ -34,7 +34,7 @@ EVENT_TYPE_TO_CLASS = {
 }
 
 
-def parse_request(request_data: dict) -> ViberReqestObject:
+def parse_request(request_data: dict) -> ViberRequestObject:
     event = request_data.get('event', None)
     event_object = EVENT_TYPE_TO_CLASS.get(event, None)
     if not event_object:

@@ -1,3 +1,5 @@
+import typing
+
 from viberio import types
 from viberio.api.client import ViberBot
 from viberio.dispatcher.events import Event, SkipHandler
@@ -5,12 +7,17 @@ from viberio.types import requests, messages
 from viberio.types.requests import EventType
 from viberio.utils.mixins import DataMixin, ContextInstanceMixin
 
+from .storage import FSMContext, BaseStorage, DisabledStorage
+
 
 class Dispatcher(DataMixin, ContextInstanceMixin):
-    def __init__(self, viber: ViberBot):
-        self.viber: ViberBot = viber
+    def __init__(self, viber: ViberBot, storage: typing.Optional[BaseStorage] = None):
+        if storage is None:
+            storage = DisabledStorage()
 
+        self.viber: ViberBot = viber
         self.loop = self.viber.loop
+        self.storage = storage
 
         self.handlers = Event()
         self.messages_handler = Event()  # ViberMessageRequest
@@ -40,13 +47,13 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self.messages_handler.subscribe(self._process_message, [])
 
     @staticmethod
-    def parse_request(data: dict) -> requests.ViberReqestObject:
+    def parse_request(data: dict) -> requests.ViberRequestObject:
         return types.requests.parse_request(data)
 
-    def feed_request(self, request: requests.ViberReqestObject):
+    def feed_request(self, request: requests.ViberRequestObject):
         return self.loop.create_task(self.handlers.notify(request))
 
-    async def _process_event(self, viber_request: requests.ViberReqestObject, data: dict):
+    async def _process_event(self, viber_request: requests.ViberRequestObject, data: dict):
         data['_request'] = viber_request
         if viber_request.event == EventType.SUBSCRIBED:
             result = await self.subscribed_handler.notify(viber_request, data)
@@ -98,3 +105,22 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         if result:
             return result
         raise SkipHandler()
+
+    def current_state(self, *, user: str) -> typing.Union[typing.ContextManager[FSMContext], FSMContext]:
+        """
+
+        Get current state for user in chat as context
+
+        .. code-block:: python3
+
+            with dp.current_state(user=request.sender.id) as state:
+                pass
+
+            state = dp.current_state()
+            state.set_state('my_state')
+
+        :param user:
+        :return:
+        """
+
+        return FSMContext(storage=self.storage, user=user)
