@@ -107,3 +107,21 @@ class Url(Filter):
         if validators.url(text, public=self.public):
             return True
         return False
+
+
+class StateFilter(Filter):
+    def __init__(self, state: str):
+        self.state = state
+
+    async def check(self, event):
+        from ..dispatcher import Dispatcher
+        dp_ = Dispatcher.get_current()
+
+        if isinstance(event, ViberMessageRequest):
+            curr_state = dp_.current_state(user=event.sender.id)
+
+            if await curr_state.get_state() == self.state:
+                return {'state': curr_state}
+            return await curr_state.get_state() == self.state
+
+        return True

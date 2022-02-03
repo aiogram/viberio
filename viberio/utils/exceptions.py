@@ -2,5 +2,5 @@ class ViberAIOWarning(Exception):
     pass
 
 
-class FSMStorageWarning(ViberAIOWarning):
+class FSMStorageWarning(ViberAIOWarning, DeprecationWarning):
     pass

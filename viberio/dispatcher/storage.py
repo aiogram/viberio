@@ -118,16 +118,12 @@ class BaseStorage:
 
     @staticmethod
     def resolve_state(value):
-        from .filters.state import State
 
         if value is None:
             return
 
         if isinstance(value, str):
             return value
-
-        if isinstance(value, State):
-            return value.state
 
         return str(value)
 

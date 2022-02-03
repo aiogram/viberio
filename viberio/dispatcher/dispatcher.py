@@ -106,7 +106,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             return result
         raise SkipHandler()
 
-    def current_state(self, *, user: str) -> FSMContext:
+    def current_state(self, *, user: str) -> typing.Union[typing.ContextManager[FSMContext], FSMContext]:
         """
 
         Get current state for user in chat as context
@@ -119,7 +119,6 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
             state = dp.current_state()
             state.set_state('my_state')
 
-        :param chat:
         :param user:
         :return:
         """
